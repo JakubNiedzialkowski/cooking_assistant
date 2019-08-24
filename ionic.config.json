@@ -1,5 +1,7 @@
 {
   "name": "cooking_assistant",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
