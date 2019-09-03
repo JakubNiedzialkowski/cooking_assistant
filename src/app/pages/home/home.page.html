@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>
       Pomocnik kuchenny
     </ion-title>
@@ -26,7 +29,7 @@
     </ion-list-header>
 
     
-    <div class="card-background-page"  *ngFor="let recipe of recipes">
+    <div class="card-background-page" *ngFor="let recipe of recipes">
         <ion-card (click)='goToRecipe(recipe)'>
             <img src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"/>
             <div class="card-title">{{ recipe.title }}</div>

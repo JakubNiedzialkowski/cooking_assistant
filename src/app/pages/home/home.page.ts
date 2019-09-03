@@ -171,7 +171,7 @@ export class HomePage {
   }
 
   goToRecipe(recipe){
-    this.navController.navigateRoot('/recipe/' + recipe.id);
+    this.navController.navigateRoot('/menu/recipe/' + recipe.id);
   }
 
 
