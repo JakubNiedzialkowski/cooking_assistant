@@ -53,6 +53,17 @@ export class StorageService {
     return this.storage.get(RECIPES_KEY);
   }
 
+  getRecipeById(recipeId: number) {
+    return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
+      for (let r of recipes) {
+        if (r.id === recipeId) {
+          return r;
+        }
+      }
+    });
+
+  }
+
   // UPDATE
   updateRecipe(Recipe: Recipe): Promise<any> {
     return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {

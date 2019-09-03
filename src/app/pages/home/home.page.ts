@@ -3,9 +3,9 @@ import { Component, ViewChild } from '@angular/core';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 
-import { StorageService, Recipe, ImageReference } from '../services/storage.service';
+import { StorageService, Recipe, ImageReference } from '../../services/storage.service';
 
-import { ActionSheetController, Platform, ToastController, IonList } from '@ionic/angular';
+import { ActionSheetController, Platform, ToastController, IonList, NavController } from '@ionic/angular';
 import { ChangeDetectorRef } from '@angular/core';
 
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
@@ -60,7 +60,9 @@ export class HomePage {
     private camera: Camera,
     //private filePath: FilePath,
     private file: File,
-    private localNotifications: LocalNotifications, ) {
+    private localNotifications: LocalNotifications,
+    private navController: NavController,
+    ) {
     this.plt.ready().then(() => {
       this.loadRecipes();
       this.locale = 'pl-PL';
@@ -85,6 +87,7 @@ export class HomePage {
   loadRecipes() {
     this.storageService.getRecipes().then(recipes => {
       this.recipes = recipes;
+      console.log(recipes);
     });
   }
 
@@ -165,6 +168,10 @@ export class HomePage {
           this.speechRecognition.requestPermission();
         }
       });
+  }
+
+  goToRecipe(recipe){
+    this.navController.navigateRoot('/recipe/' + recipe.id);
   }
 
 
