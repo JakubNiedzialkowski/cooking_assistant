@@ -41,6 +41,7 @@ export class HomePage {
 
   //STORAGE
   recipes: Recipe[] = [];
+  recipesToDisplay: Recipe[] = [];
   newRecipe: Recipe = <Recipe>{};
 
   //SPEECH RECOGNITION
@@ -87,14 +88,14 @@ export class HomePage {
   loadRecipes() {
     this.storageService.getRecipes().then(recipes => {
       this.recipes = recipes;
-      console.log(recipes);
+      this.recipesToDisplay = recipes;
     });
   }
 
   // UPDATE
   updateRecipe(Recipe: Recipe) {
     this.storageService.updateRecipe(Recipe).then(Recipe => {
-      this.showToast('Recipe updated!');
+      this.showToast('Przepis pomyślnie zaktualizowany.');
       this.mylist.closeSlidingItems(); // Fix or sliding is stuck afterwards
       this.loadRecipes(); // Or update it inside the array directly
     });
@@ -104,7 +105,7 @@ export class HomePage {
   // DELETE
   deleteRecipe(Recipe: Recipe) {
     this.storageService.deleteRecipe(Recipe.id).then(Recipe => {
-      this.showToast('Recipe removed!');
+      this.showToast('Przepis został usunięty.');
       this.mylist.closeSlidingItems(); // Fix or sliding is stuck afterwards
       this.loadRecipes(); // Or splice it from the array directly
     });
@@ -172,6 +173,16 @@ export class HomePage {
 
   goToRecipe(recipe){
     this.navController.navigateRoot('/menu/recipe/' + recipe.id);
+  }
+
+  handleSearchbarChange(event){
+    let query = event.target.value.toLowerCase();
+    let temp = [];
+    this.recipes.filter( recipe =>{
+      if(recipe.title.toLowerCase().includes(query))
+        temp.push(recipe);
+    });
+    this.recipesToDisplay = temp;
   }
 
 

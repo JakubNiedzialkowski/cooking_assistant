@@ -8,7 +8,53 @@
 </ion-header>
 
 <ion-content>
-  <img src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"/>
-  {{loadedRecipe?.steps}}
-  {{loadedRecipe?.ingredients}}
+  <ion-img style="max-height:33%;" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+ 
+  <ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="editRecipe()" style="width:100%" color="primary">Edytuj przepis</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="deleteRecipe()" style="width:100%" color="danger">Usuń przepis</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+
+  <ion-item (click)="toggleSteps()" color="primary">
+    <ion-label>
+      Przygotowanie przepisu
+      <ion-icon style="float:right" name="arrow-round-down" [hidden]="isStepsListVisible"></ion-icon>
+      <ion-icon style="float:right" name="arrow-round-up" [hidden]="!isStepsListVisible"></ion-icon>
+    </ion-label>
+  </ion-item>
+  <ion-list [hidden]="!isStepsListVisible">
+    <ion-item *ngFor="let step of loadedRecipe?.steps">
+      {{ step }}
+    </ion-item>
+  </ion-list>
+
+  <ion-item (click)="toggleIngredients()" color="primary">
+    <ion-label>
+      Składniki
+      <ion-icon style="float:right" name="arrow-round-down" [hidden]="isIngredientListVisible"></ion-icon>
+      <ion-icon style="float:right" name="arrow-round-up" [hidden]="!isIngredientListVisible"></ion-icon>
+    </ion-label>
+  </ion-item>
+  <ion-list [hidden]="!isIngredientListVisible">
+    <ion-item *ngFor="let ingredient of loadedRecipe?.ingredients; let i=index">
+      {{ ingredient }} {{ loadedRecipe.ingredientAmounts[i] }}
+    </ion-item>
+  </ion-list>
+  
 </ion-content>
+
+<ion-footer>
+  <ion-item>
+    <ion-button (click)="startCooking()" size="large" shape="round" color="success">
+      Rozpocznij gotowanie
+    </ion-button>
+  </ion-item>
+</ion-footer>

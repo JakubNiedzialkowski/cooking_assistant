@@ -7,9 +7,16 @@
       Pomocnik kuchenny
     </ion-title>
   </ion-toolbar>
+  <ion-searchbar (ionChange)="handleSearchbarChange($event)" placeholder="Szukaj...">
+  </ion-searchbar>
 </ion-header>
- 
+
 <ion-content>
+    <ion-fab slot="fixed" horizontal="start" vertical="bottom">
+        <ion-fab-button color="success">
+          <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
   <ion-item>
     <ion-label position="fixed">Nazwa przepisu</ion-label>
     <ion-input [(ngModel)]="sampleRecipe.title"></ion-input>
@@ -28,13 +35,14 @@
       <ion-label>Lista przepisów</ion-label>
     </ion-list-header>
 
-    
-    <div class="card-background-page" *ngFor="let recipe of recipes">
-        <ion-card (click)='goToRecipe(recipe)'>
-            <img src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"/>
-            <div class="card-title">{{ recipe.title }}</div>
-        </ion-card>
-     </div>
+
+    <div class="card-background-page" *ngFor="let recipe of recipesToDisplay">
+      <ion-card (click)='goToRecipe(recipe)'>
+        <ion-img style="max-height:200px" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg">
+        </ion-img>
+        <div class="card-title">{{ recipe.title }}</div>
+      </ion-card>
+    </div>
 
     <!-- <ion-item-sliding *ngFor="let recipe of recipes">
 
@@ -58,6 +66,4 @@
     </ion-item-sliding> -->
 
   </ion-list>
-
 </ion-content>
-
