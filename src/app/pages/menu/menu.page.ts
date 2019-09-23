@@ -26,7 +26,6 @@ export class MenuPage implements OnInit {
       if(typeof event.url != ('undefined' || null))
         {
           this.selectedPath = event.url;
-          console.log(this.selectedPath);
         }
     });
   }

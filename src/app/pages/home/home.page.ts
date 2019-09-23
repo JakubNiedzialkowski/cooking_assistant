@@ -99,7 +99,6 @@ export class HomePage {
       this.mylist.closeSlidingItems(); // Fix or sliding is stuck afterwards
       this.loadRecipes(); // Or update it inside the array directly
     });
-    this.annyangTest();
   }
 
   // DELETE
@@ -131,6 +130,16 @@ export class HomePage {
       .then(() => console.log('Success'))
       .catch((reason: any) => console.log(reason));
   }
+
+  // ttsTest() {
+  //   clearInterval();
+  //   setInterval(() => {
+  //     this.playText("Interval 1");
+  //   }, 1000);
+  //   setInterval(() => {
+  //     this.playText("Interval 2");
+  //   }, 2000);
+  // }
 
   //NOTIFICATIONS
 

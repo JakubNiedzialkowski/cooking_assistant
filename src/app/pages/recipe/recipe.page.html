@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!isEditPanelVisible">
   <ion-img style="max-height:33%;" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
  
   <ion-item>
@@ -51,10 +51,79 @@
   
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="!isEditPanelVisible">
   <ion-item>
     <ion-button (click)="startCooking()" size="large" shape="round" color="success">
       Rozpocznij gotowanie
     </ion-button>
   </ion-item>
 </ion-footer>
+
+<ion-content *ngIf="isEditPanelVisible">
+  Edycja przepisu
+  <ion-item>
+    <ion-label position="fixed">Nazwa przepisu</ion-label>
+    <ion-input [(ngModel)]="loadedRecipe.title"></ion-input>
+  </ion-item>
+
+  <ion-label position="fixed">Kroki</ion-label>
+  <ion-item>
+    <ion-grid>
+      <ion-row *ngFor="let s of loadedRecipe.steps; let i=index; trackBy: trackById">
+        <ion-col>
+          <ion-input [(ngModel)]="loadedRecipe.steps[i]"></ion-input>
+        </ion-col>
+        <ion-col>
+            <ion-datetime displayFormat="HH:mm:ss" pickerFormat="HH : mm : ss" [(ngModel)]="formattedTimes[i]"></ion-datetime> 
+        </ion-col>
+        <ion-col size ="2">
+          <ion-button color="danger" (click)="deleteStep(i)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-button (click)="addNewStep()" style="width:100%" color="success">
+          <ion-text>Nowy krok</ion-text>
+        </ion-button>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+
+  <ion-label position="fixed">Składniki</ion-label>
+  <ion-item>
+    <ion-grid>
+      <ion-row *ngFor="let s of loadedRecipe.ingredients; let i=index; trackBy: trackById">
+        <ion-col>
+          <ion-input [(ngModel)]="loadedRecipe.ingredients[i]"></ion-input>
+        </ion-col>
+        <ion-col>
+          <ion-input [(ngModel)]="loadedRecipe.ingredientAmounts[i]"></ion-input>
+        </ion-col>
+        <ion-col size ="2">
+          <ion-button color="danger" (click)="deleteIngredient(i)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-button (click)="addNewIngredient()" style="width:100%" color="success">
+          <ion-text>Nowy składnik</ion-text>
+        </ion-button>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+  
+  <ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="cancelEdit()" style="width:100%" color="danger">Wróć</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="applyChanges()" style="width:100%" color="success">Zapisz</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+</ion-content>
