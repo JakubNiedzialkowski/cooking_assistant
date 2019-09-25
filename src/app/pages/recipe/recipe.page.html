@@ -52,15 +52,13 @@
 </ion-content>
 
 <ion-footer *ngIf="!isEditPanelVisible">
-  <ion-item>
-    <ion-button (click)="startCooking()" size="large" shape="round" color="success">
-      Rozpocznij gotowanie
-    </ion-button>
-  </ion-item>
+        <ion-button (click)="startCooking()" size="large" expand="block"   shape="round" color="primary">
+            Rozpocznij gotowanie
+          </ion-button>
 </ion-footer>
 
 <ion-content *ngIf="isEditPanelVisible">
-  Edycja przepisu
+  <!-- Edycja przepisu -->
   <ion-item>
     <ion-label position="fixed">Nazwa przepisu</ion-label>
     <ion-input [(ngModel)]="loadedRecipe.title"></ion-input>
@@ -83,7 +81,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-button (click)="addNewStep()" style="width:100%" color="success">
+        <ion-button (click)="addNewStep()" style="width:100%" color="primary">
           <ion-text>Nowy krok</ion-text>
         </ion-button>
       </ion-row>
@@ -107,7 +105,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-button (click)="addNewIngredient()" style="width:100%" color="success">
+        <ion-button (click)="addNewIngredient()" style="width:100%" color="primary">
           <ion-text>Nowy składnik</ion-text>
         </ion-button>
       </ion-row>

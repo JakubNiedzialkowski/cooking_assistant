@@ -6,6 +6,7 @@ import { Router, RouterEvent } from '@angular/router';
   templateUrl: './menu.page.html',
   styleUrls: ['./menu.page.scss'],
 })
+
 export class MenuPage implements OnInit {
 
   pages = [

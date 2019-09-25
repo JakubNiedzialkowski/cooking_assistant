@@ -185,4 +185,5 @@ export class RecipePage implements OnInit {
     return index;
   }
 
+
 }
