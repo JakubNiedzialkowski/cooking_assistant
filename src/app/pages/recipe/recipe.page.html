@@ -8,8 +8,11 @@
 </ion-header>
 
 <ion-content *ngIf="!isEditPanelVisible">
-  <ion-img style="max-height:33%;" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
- 
+  <ion-img *ngIf="loadedRecipe?.image === null" style="max-height:200px" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+  <ion-item style="max-height:200px">
+      <ion-img *ngIf="loadedRecipe?.image != null" style="max-height:200px" [src]="loadedRecipe?.image.resourcePath"></ion-img>
+  </ion-item>
+
   <ion-item>
     <ion-grid>
       <ion-row>
@@ -48,17 +51,25 @@
       {{ ingredient }} {{ loadedRecipe.ingredientAmounts[i] }}
     </ion-item>
   </ion-list>
-  
+
 </ion-content>
 
 <ion-footer *ngIf="!isEditPanelVisible">
-        <ion-button (click)="startCooking()" size="large" expand="block"   shape="round" color="primary">
-            Rozpocznij gotowanie
-          </ion-button>
+  <ion-button (click)="startCooking()" size="large" expand="block" shape="round" color="primary">
+    Rozpocznij gotowanie
+  </ion-button>
 </ion-footer>
 
 <ion-content *ngIf="isEditPanelVisible">
   <!-- Edycja przepisu -->
+  <ion-item *ngIf="loadedRecipe.image != null">
+    <ion-img style="max-height:200px" [src]="loadedRecipe?.image.resourcePath"></ion-img>
+  </ion-item>
+  <ion-button expand="block" color="primary" (click)="selectImage()">
+    <ion-icon slot="end" name="camera"></ion-icon>
+    <ion-text>Dodaj obraz</ion-text>
+  </ion-button>
+
   <ion-item>
     <ion-label position="fixed">Nazwa przepisu</ion-label>
     <ion-input [(ngModel)]="loadedRecipe.title"></ion-input>
@@ -72,9 +83,10 @@
           <ion-input [(ngModel)]="loadedRecipe.steps[i]"></ion-input>
         </ion-col>
         <ion-col>
-            <ion-datetime displayFormat="HH:mm:ss" pickerFormat="HH : mm : ss" [(ngModel)]="formattedTimes[i]"></ion-datetime> 
+          <ion-datetime displayFormat="HH:mm:ss" pickerFormat="HH : mm : ss" [(ngModel)]="formattedTimes[i]">
+          </ion-datetime>
         </ion-col>
-        <ion-col size ="2">
+        <ion-col size="2">
           <ion-button color="danger" (click)="deleteStep(i)">
             <ion-icon name="trash"></ion-icon>
           </ion-button>
@@ -98,7 +110,7 @@
         <ion-col>
           <ion-input [(ngModel)]="loadedRecipe.ingredientAmounts[i]"></ion-input>
         </ion-col>
-        <ion-col size ="2">
+        <ion-col size="2">
           <ion-button color="danger" (click)="deleteIngredient(i)">
             <ion-icon name="trash"></ion-icon>
           </ion-button>
@@ -111,7 +123,7 @@
       </ion-row>
     </ion-grid>
   </ion-item>
-  
+
   <ion-item>
     <ion-grid>
       <ion-row>

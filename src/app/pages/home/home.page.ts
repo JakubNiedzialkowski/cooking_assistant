@@ -300,33 +300,23 @@ export class HomePage {
             let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
             let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
             this.copyFileToLocalDirectory(correctPath, currentName, this.storageService.generateImageName());
-            //return this.copyFileToLocalDirectory(correctPath, currentName, this.storageService.generateImageName());
           });
       } else {
         var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
         var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
         this.copyFileToLocalDirectory(correctPath, currentName, this.storageService.generateImageName());
-        //return this.copyFileToLocalDirectory(correctPath, currentName, this.storageService.generateImageName());
       }
     });
   }
 
   copyFileToLocalDirectory(namePath, currentName, newFileName) {
-    let image;
     this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
         let filePath = this.file.dataDirectory + newFileName;
         let resourcePath = this.storageService.getImageResourcePath(filePath);
         this.mockRecipe.image = <ImageReference>{name:newFileName, resourcePath, filePath};
-        image = <ImageReference>{name:newFileName, resourcePath, filePath};
     }, error => {
         return null;
     });
-    return image;
   }
 
-  promiseTest(){
-    //alert(this.copyFileToLocalDirectory('namepath', 'currentname', 'newFileName'));
-    this.selectImage();
-    alert(this.mockRecipe.image.resourcePath);
-  }
 }

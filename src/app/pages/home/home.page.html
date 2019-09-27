@@ -29,53 +29,31 @@
         <ion-button expand="full" (click)="annyangTest()">Test rozpoznawania mowy</ion-button>
       </ion-item>
       <ion-item>
-        <ion-button expand="full" (click)="promiseTest()">Test obietnic</ion-button>
+        <ion-button expand="full"
+          (click)="playText('To jest wiadomość testowa. Witaj w aplikacji Pomocnik Kuchenny! Co chcesz ugotować?')">Test
+          TTS</ion-button>
       </ion-item>
-      <ion-item><ion-button expand="full" (click)="playText('To jest wiadomość testowa. Witaj w aplikacji Pomocnik Kuchenny! Co chcesz ugotować?')">Test TTS</ion-button></ion-item>
     </ion-list-header>
 
     <div class="card-background-page" *ngFor="let recipe of recipesToDisplay">
       <ion-card (click)='goToRecipe(recipe)'>
-        <ion-img style="max-height:200px" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg">
-        </ion-img>
+        <ion-img *ngIf="recipe.image != null" style="max-height:200px" [src]="recipe.image.resourcePath"></ion-img>
+        <ion-img *ngIf="recipe.image === null" style="max-height:200px" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
         <div class="card-title">{{ recipe.title }}</div>
       </ion-card>
     </div>
-
-    <!-- sliding item list -->
-
-    <!-- <ion-item-sliding *ngFor="let recipe of recipes">
-
-      <ion-item>
-        <ion-label text-wrap>
-          <h3>{{ recipe.title }}</h3>
-          <ion-text color="secondary">
-            <p>{{ recipe.steps }}</p>
-            <p>{{ recipe.stepTimes }}</p>
-            <p>{{ recipe.ingredients }}</p>
-            <p>{{ recipe.ingredientAmounts }}</p>
-          </ion-text>
-          <p>{{ recipe.popularity }}</p>
-        </ion-label>
-      </ion-item>
-
-      <ion-item-options side="end">
-        <ion-item-option color="secondary" (click)="updateRecipe(recipe)">Update</ion-item-option>
-        <ion-item-option color="danger" (click)="deleteRecipe(recipe)">Delete</ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding> -->
 
   </ion-list>
 </ion-content>
 
 <ion-content *ngIf="isRecipeFormActive">
   <ion-item *ngIf="mockRecipe.image != null">
-      <ion-img style="max-height:200px" [src]="mockRecipe?.image.resourcePath" ></ion-img>
+    <ion-img style="max-height:200px" [src]="mockRecipe?.image.resourcePath"></ion-img>
   </ion-item>
-      <ion-button expand="block" color="primary" (click)="selectImage()">
-          <ion-icon slot="end" name="camera"></ion-icon>
-          <ion-text>Dodaj obraz</ion-text>
-      </ion-button>
+  <ion-button expand="block" color="primary" (click)="selectImage()">
+    <ion-icon slot="end" name="camera"></ion-icon>
+    <ion-text>Dodaj obraz</ion-text>
+  </ion-button>
 
   <ion-item>
     <ion-label position="fixed">Nazwa przepisu</ion-label>

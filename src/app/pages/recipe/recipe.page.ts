@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { StorageService, Recipe } from '../../services/storage.service';
-import { ToastController, NavController, AlertController } from '@ionic/angular';
+import { StorageService, Recipe, ImageReference } from '../../services/storage.service';
+import { ToastController, NavController, AlertController, Platform, ActionSheetController } from '@ionic/angular';
+
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { File } from '@ionic-native/File/ngx';
 
 
 @Component({
@@ -34,7 +38,12 @@ export class RecipePage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
     private navController: NavController,
-    public alertController: AlertController,
+    private alertController: AlertController,
+    private plt: Platform,
+    private actionSheetController: ActionSheetController,
+    private camera: Camera,
+    private filePath: FilePath,
+    private file: File,
   ) { }
 
   ngOnInit() {
@@ -72,6 +81,64 @@ export class RecipePage implements OnInit {
     this.loadedRecipe.stepTimes = this.convertFormattedTimesToSeconds(this.formattedTimes);
     this.updateRecipe(this.loadedRecipe);
     this.isEditPanelVisible = false;
+  }
+
+  async selectImage() {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Wybierz źródło obrazu",
+      buttons: [{
+        text: 'Załaduj z galerii',
+        handler: () => {
+          this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+        }
+      },
+      {
+        text: 'Zrób zdjęcie',
+        handler: () => {
+          this.takePicture(this.camera.PictureSourceType.CAMERA);
+        }
+      },
+      {
+        text: 'Anuluj',
+        role: 'cancel'
+      }
+      ]
+    });
+    await actionSheet.present();
+  }
+
+  takePicture(sourceType: PictureSourceType) {
+    var options: CameraOptions = {
+      quality: 100,
+      sourceType: sourceType,
+      saveToPhotoAlbum: false,
+      correctOrientation: true
+    };
+
+    this.camera.getPicture(options).then(imagePath => {
+      if (this.plt.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
+        this.filePath.resolveNativePath(imagePath)
+          .then(filePath => {
+            let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
+            let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
+            this.copyFileToLocalDirectory(correctPath, currentName, this.storageService.generateImageName());
+          });
+      } else {
+        var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+        var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+        this.copyFileToLocalDirectory(correctPath, currentName, this.storageService.generateImageName());
+      }
+    });
+  }
+
+  copyFileToLocalDirectory(namePath, currentName, newFileName) {
+    this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
+        let filePath = this.file.dataDirectory + newFileName;
+        let resourcePath = this.storageService.getImageResourcePath(filePath);
+        this.loadedRecipe.image = <ImageReference>{name:newFileName, resourcePath, filePath};
+    }, error => {
+        return null;
+    });
   }
 
   updateRecipe(Recipe: Recipe) {
