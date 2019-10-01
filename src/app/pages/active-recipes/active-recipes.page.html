@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title> Gotowane przepisy </ion-title>
+  </ion-toolbar>
+  <ion-searchbar *ngIf="!isRecipeFormActive" (ionChange)="handleSearchbarChange($event)" placeholder="Szukaj...">
+  </ion-searchbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+
+    <div class="card-background-page" *ngFor="let activeRecipe of recipesToDisplay">
+      <ion-card (click)='goToRecipe(activeRecipe.recipe)'>
+        <ion-img *ngIf="activeRecipe.recipe.image != null" style="max-height:200px"
+          [src]="activeRecipe.recipe.image.resourcePath"></ion-img>
+        <ion-img *ngIf="activeRecipe.recipe.image === null" style="max-height:200px"
+          src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+        <div class="card-title">{{ activeRecipe.recipe.title }}</div>
+      </ion-card>
+    </div>
+
+  </ion-list>
+</ion-content>

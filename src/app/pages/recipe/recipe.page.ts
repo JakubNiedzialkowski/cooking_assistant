@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { StorageService, Recipe, ImageReference } from '../../services/storage.service';
+import { StorageService, Recipe, ImageReference } from '../../services/storageService/storage.service';
+import { CookedRecipesService } from '../../services/cookedRecipeService/cooked-recipes.service';
 import { ToastController, NavController, AlertController, Platform, ActionSheetController } from '@ionic/angular';
 
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
@@ -17,6 +18,8 @@ import { File } from '@ionic-native/File/ngx';
 export class RecipePage implements OnInit {
 
   loadedRecipe: Recipe;
+  currentStep;
+  timeUntilNextStep;
   formattedTimes = [];
   // mockRecipe: Recipe = {
   //   id: null,
@@ -29,12 +32,15 @@ export class RecipePage implements OnInit {
   //   popularity: null,
   // };
 
+  isRecipeCooked = false;
+
   isIngredientListVisible = false;
   isStepsListVisible = false;
 
   isEditPanelVisible = false;
 
   constructor(private storageService: StorageService,
+    private cookedRecipes: CookedRecipesService,
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
     private navController: NavController,
@@ -53,16 +59,37 @@ export class RecipePage implements OnInit {
         this.showToast("Nie znaleziono podanego przepisu");
         return;
       }
-      const recipeId = paramMap.get('recipeId');
-      this.storageService.getRecipeById(Number(recipeId)).then(recipe => {
-        this.loadedRecipe = recipe;
-      });
+      const recipeId = Number(paramMap.get('recipeId'));
+      this.isRecipeCooked = this.cookedRecipes.isRecipeBeingCooked(recipeId);
+      if (this.isRecipeCooked) {
+        let recipeData = this.cookedRecipes.getCookedRecipeById(recipeId);
+        this.loadedRecipe = recipeData.recipe;
+        this.currentStep = recipeData.currentStep;
+        this.timeUntilNextStep = recipeData.timeUntilNextStep;
+      }
+      else {
+        this.storageService.getRecipeById(recipeId).then(recipe => {
+          this.loadedRecipe = recipe;
+        });
+      }
+
     });
   }
 
   startCooking() {
-
+    this.cookedRecipes.addCookedRecipe(this.loadedRecipe);
+    let recipeData = this.cookedRecipes.getCookedRecipeById(this.loadedRecipe.id);
+    this.currentStep = recipeData.currentStep;
+    this.timeUntilNextStep = recipeData.timeUntilNextStep;
+    this.cookedRecipes.startTimer();
+    this.isRecipeCooked = true;
   }
+
+  stopCooking(){
+    
+    this.isRecipeCooked=false;
+  }
+
 
   editRecipe() {
     this.formattedTimes = [];
@@ -133,11 +160,11 @@ export class RecipePage implements OnInit {
 
   copyFileToLocalDirectory(namePath, currentName, newFileName) {
     this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-        let filePath = this.file.dataDirectory + newFileName;
-        let resourcePath = this.storageService.getImageResourcePath(filePath);
-        this.loadedRecipe.image = <ImageReference>{name:newFileName, resourcePath, filePath};
+      let filePath = this.file.dataDirectory + newFileName;
+      let resourcePath = this.storageService.getImageResourcePath(filePath);
+      this.loadedRecipe.image = <ImageReference>{ name: newFileName, resourcePath, filePath };
     }, error => {
-        return null;
+      return null;
     });
   }
 

@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 
-import { StorageService, Recipe, ImageReference } from '../../services/storage.service';
+import { StorageService, Recipe, ImageReference } from '../../services/storageService/storage.service';
 
 import { ActionSheetController, Platform, ToastController, IonList, NavController } from '@ionic/angular';
 import { ChangeDetectorRef } from '@angular/core';

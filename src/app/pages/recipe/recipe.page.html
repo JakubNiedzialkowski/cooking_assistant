@@ -7,10 +7,13 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="!isEditPanelVisible">
-  <ion-img *ngIf="loadedRecipe?.image === null" style="max-height:200px" src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+<!-- Recipe details -->
+<ion-content *ngIf="!isEditPanelVisible && !isRecipeCooked">
+  <ion-img *ngIf="loadedRecipe?.image === null" style="max-height:200px"
+    src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
   <ion-item style="max-height:200px">
-      <ion-img *ngIf="loadedRecipe?.image != null" style="max-height:200px" [src]="loadedRecipe?.image.resourcePath"></ion-img>
+    <ion-img *ngIf="loadedRecipe?.image != null" style="max-height:200px" [src]="loadedRecipe?.image.resourcePath">
+    </ion-img>
   </ion-item>
 
   <ion-item>
@@ -49,24 +52,18 @@
   <ion-list [hidden]="!isIngredientListVisible">
     <ion-item *ngFor="let ingredient of loadedRecipe?.ingredients; let i=index">
       <ion-text slot="start">
-          {{ ingredient }}
+        {{ ingredient }}
       </ion-text>
       <ion-text slot="end">
-          {{ loadedRecipe.ingredientAmounts[i] }}
-      </ion-text> 
+        {{ loadedRecipe.ingredientAmounts[i] }}
+      </ion-text>
     </ion-item>
   </ion-list>
 
 </ion-content>
 
-<ion-footer *ngIf="!isEditPanelVisible">
-  <ion-button (click)="startCooking()" size="large" expand="block" shape="round" color="primary">
-    Rozpocznij gotowanie
-  </ion-button>
-</ion-footer>
-
+<!-- Recipe edit -->
 <ion-content *ngIf="isEditPanelVisible">
-  <!-- Edycja przepisu -->
   <ion-item *ngIf="loadedRecipe.image != null">
     <ion-img style="max-height:200px" [src]="loadedRecipe?.image.resourcePath"></ion-img>
   </ion-item>
@@ -76,23 +73,23 @@
   </ion-button>
 
   <ion-item color="primary">
-      <ion-label>Nazwa przepisu</ion-label>
+    <ion-label>Nazwa przepisu</ion-label>
   </ion-item>
   <ion-item>
     <ion-input [(ngModel)]="loadedRecipe.title"></ion-input>
   </ion-item>
 
   <ion-item color="primary">
-      <ion-grid>
-          <ion-row>
-              <ion-col>
-                  <ion-label>Kroki</ion-label>
-              </ion-col>
-              <ion-col>
-                  <ion-label>Czasy trwania kroków</ion-label>
-              </ion-col>
-            </ion-row>
-      </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-label>Kroki</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Czasy trwania kroków</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-item>
   <ion-item>
     <ion-grid>
@@ -120,16 +117,16 @@
 
 
   <ion-item color="primary">
-      <ion-grid>
-          <ion-row>
-              <ion-col>
-                  <ion-label>Składniki</ion-label>
-              </ion-col>
-              <ion-col>
-                  <ion-label>Ilości składników</ion-label>
-              </ion-col>
-            </ion-row>
-      </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-label>Składniki</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Ilości składników</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-item>
   <ion-item>
     <ion-grid>
@@ -167,3 +164,25 @@
     </ion-grid>
   </ion-item>
 </ion-content>
+
+<!-- Cooked recipe view -->
+<ion-content *ngIf="!isEditPanelVisible && isRecipeCooked">
+  <!-- Progress bar -->
+  <ion-item>
+    <ion-text>
+      {{ currentStep }}
+    </ion-text>
+  </ion-item>
+</ion-content>
+
+<ion-footer *ngIf="!isEditPanelVisible && !isRecipeCooked">
+  <ion-button (click)="startCooking()" size="large" expand="block" shape="round" color="primary">
+    Rozpocznij gotowanie
+  </ion-button>
+</ion-footer>
+
+<ion-footer *ngIf="!isEditPanelVisible && isRecipeCooked">
+  <ion-button (click)="stopCooking()" size="large" expand="block" shape="round" color="danger">
+    Rozpocznij gotowanie
+  </ion-button>
+</ion-footer>
