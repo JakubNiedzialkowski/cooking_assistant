@@ -23,7 +23,7 @@ const routes: Routes = [
             }
           ]
       },
-      { path: 'active-recipes', loadChildren: './pages/active-recipes/active-recipes.module#ActiveRecipesPageModule' },
+      { path: 'active-recipes', loadChildren: '../active-recipes/active-recipes.module#ActiveRecipesPageModule' },
     ]
   },
   {

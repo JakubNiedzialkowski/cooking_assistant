@@ -18,9 +18,11 @@ import { File } from '@ionic-native/File/ngx';
 export class RecipePage implements OnInit {
 
   loadedRecipe: Recipe;
-  currentStep;
-  timeUntilNextStep;
+  cookedRecipeData;
+
   formattedTimes = [];
+
+  
   // mockRecipe: Recipe = {
   //   id: null,
   //   title: '',
@@ -62,10 +64,8 @@ export class RecipePage implements OnInit {
       const recipeId = Number(paramMap.get('recipeId'));
       this.isRecipeCooked = this.cookedRecipes.isRecipeBeingCooked(recipeId);
       if (this.isRecipeCooked) {
-        let recipeData = this.cookedRecipes.getCookedRecipeById(recipeId);
-        this.loadedRecipe = recipeData.recipe;
-        this.currentStep = recipeData.currentStep;
-        this.timeUntilNextStep = recipeData.timeUntilNextStep;
+        this.cookedRecipeData = this.cookedRecipes.getCookedRecipeById(recipeId);
+        this.loadedRecipe = this.cookedRecipeData.recipe;
       }
       else {
         this.storageService.getRecipeById(recipeId).then(recipe => {
@@ -77,16 +77,13 @@ export class RecipePage implements OnInit {
   }
 
   startCooking() {
-    this.cookedRecipes.addCookedRecipe(this.loadedRecipe);
-    let recipeData = this.cookedRecipes.getCookedRecipeById(this.loadedRecipe.id);
-    this.currentStep = recipeData.currentStep;
-    this.timeUntilNextStep = recipeData.timeUntilNextStep;
-    this.cookedRecipes.startTimer();
+    this.cookedRecipes.startCookingRecipe(this.loadedRecipe);
+    this.cookedRecipeData = this.cookedRecipes.getCookedRecipeById(this.loadedRecipe.id);
     this.isRecipeCooked = true;
   }
 
   stopCooking(){
-    
+    this.cookedRecipes.stopCookingRecipe(this.cookedRecipeData.recipe.id);
     this.isRecipeCooked=false;
   }
 

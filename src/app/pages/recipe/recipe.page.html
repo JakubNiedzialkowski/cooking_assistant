@@ -167,11 +167,17 @@
 
 <!-- Cooked recipe view -->
 <ion-content *ngIf="!isEditPanelVisible && isRecipeCooked">
-  <!-- Progress bar -->
-  <ion-item>
-    <ion-text>
-      {{ currentStep }}
-    </ion-text>
+  <div style="text-align: center">
+    <circle-progress
+      style="display: inline-block"
+      [percent]="cookedRecipeData.stepProgressPercentage"
+      [title]="cookedRecipeData.formattedTimeUntilNextStep"
+    ></circle-progress>
+  </div>
+  <ion-item text-center>
+    <ion-label class="ion-text-wrap">
+      {{ cookedRecipeData.currentStep }}
+    </ion-label>
   </ion-item>
 </ion-content>
 
@@ -183,6 +189,6 @@
 
 <ion-footer *ngIf="!isEditPanelVisible && isRecipeCooked">
   <ion-button (click)="stopCooking()" size="large" expand="block" shape="round" color="danger">
-    Rozpocznij gotowanie
+    Przerwij gotowanie
   </ion-button>
 </ion-footer>
