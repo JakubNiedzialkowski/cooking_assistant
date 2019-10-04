@@ -39,7 +39,7 @@ export class CookedRecipesService {
             cookedRecipe.stepProgressPercentage = 0;
           }
           else
-           this.stopCookingRecipe(cookedRecipe.id);
+            this.stopCookingRecipe(cookedRecipe.id);
         }
         else {
           cookedRecipe.timeUntilNextStep--;
@@ -62,10 +62,10 @@ export class CookedRecipesService {
     this.cookedRecipes.push(newCookedRecipe);
   }
 
-  stopCookingRecipe(id){
-    for(let i=this.cookedRecipes.length-1; i>=0; i--){
-      if(this.cookedRecipes[i].recipe.id === id)
-        this.cookedRecipes.splice(i,1);
+  stopCookingRecipe(id) {
+    for (let i = this.cookedRecipes.length - 1; i >= 0; i--) {
+      if (this.cookedRecipes[i].recipe.id === id)
+        this.cookedRecipes.splice(i, 1);
     }
   }
 
@@ -112,4 +112,29 @@ export class CookedRecipesService {
   calculateProgressPercentage(currentTime, totalTime) {
     return 100 - currentTime / totalTime * 100;
   }
+
+  goToNextStep(cookedRecipeData) {
+    if (cookedRecipeData.currentStepIndex < cookedRecipeData.recipe.steps.length-1) {
+      cookedRecipeData.currentStepIndex++;
+      cookedRecipeData.currentStep = cookedRecipeData.recipe.steps[cookedRecipeData.currentStepIndex];
+      cookedRecipeData.timeUntilNextStep = cookedRecipeData.recipe.stepTimes[cookedRecipeData.currentStepIndex];
+      cookedRecipeData.formattedTimeUntilNextStep = this.convertSecondsToDateString(cookedRecipeData.timeUntilNextStep);
+      cookedRecipeData.stepProgressPercentage = 0;
+      return true;
+    }
+    return false;
+  }
+
+  goToPreviousStep(cookedRecipeData) {
+    if (cookedRecipeData.currentStepIndex > 0) {
+      cookedRecipeData.currentStepIndex--;
+      cookedRecipeData.currentStep = cookedRecipeData.recipe.steps[cookedRecipeData.currentStepIndex];
+      cookedRecipeData.timeUntilNextStep = cookedRecipeData.recipe.stepTimes[cookedRecipeData.currentStepIndex];
+      cookedRecipeData.formattedTimeUntilNextStep = this.convertSecondsToDateString(cookedRecipeData.timeUntilNextStep);
+      cookedRecipeData.stepProgressPercentage = 0;
+      return true;
+    }
+    return false;
+  }
+
 }

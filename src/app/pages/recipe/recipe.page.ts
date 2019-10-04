@@ -22,7 +22,7 @@ export class RecipePage implements OnInit {
 
   formattedTimes = [];
 
-  
+
   // mockRecipe: Recipe = {
   //   id: null,
   //   title: '',
@@ -47,12 +47,24 @@ export class RecipePage implements OnInit {
     private toastController: ToastController,
     private navController: NavController,
     private alertController: AlertController,
-    private plt: Platform,
+    private platform: Platform,
     private actionSheetController: ActionSheetController,
     private camera: Camera,
     private filePath: FilePath,
     private file: File,
-  ) { }
+  ) {
+    platform.backButton.subscribeWithPriority(0, ()=>{
+      if(this.isEditPanelVisible){
+        this.cancelEdit();
+      }
+      else if(this.isRecipeCooked){
+        this.goToCookedRecipesPage();
+      }
+      else{
+        this.goToHomePage();
+      }
+    });
+   }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(paramMap => {
@@ -82,11 +94,10 @@ export class RecipePage implements OnInit {
     this.isRecipeCooked = true;
   }
 
-  stopCooking(){
+  stopCooking() {
     this.cookedRecipes.stopCookingRecipe(this.cookedRecipeData.recipe.id);
-    this.isRecipeCooked=false;
+    this.isRecipeCooked = false;
   }
-
 
   editRecipe() {
     this.formattedTimes = [];
@@ -140,7 +151,7 @@ export class RecipePage implements OnInit {
     };
 
     this.camera.getPicture(options).then(imagePath => {
-      if (this.plt.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
+      if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
         this.filePath.resolveNativePath(imagePath)
           .then(filePath => {
             let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
@@ -199,6 +210,20 @@ export class RecipePage implements OnInit {
     this.storageService.getRecipeById(this.loadedRecipe.id).then(recipe => {
       this.loadedRecipe = recipe;
     });
+  }
+
+  goToNextStep() {
+    let success = this.cookedRecipes.goToNextStep(this.cookedRecipeData);
+    if (!success) {
+      this.showToast("Brak dalszych kroków.");
+    }
+  }
+
+  goToPreviousStep() {
+    let success = this.cookedRecipes.goToPreviousStep(this.cookedRecipeData);
+    if (!success) {
+      this.showToast("Brak wcześniejszych kroków.");
+    }
   }
 
   addNewStep() {
@@ -262,6 +287,10 @@ export class RecipePage implements OnInit {
 
   goToHomePage() {
     this.navController.navigateRoot('/menu/home/');
+  }
+
+  goToCookedRecipesPage(){
+    this.navController.navigateRoot('/menu/active-recipes/');
   }
 
   async showToast(msg) {

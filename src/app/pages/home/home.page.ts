@@ -5,7 +5,7 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 
 import { StorageService, Recipe, ImageReference } from '../../services/storageService/storage.service';
 
-import { ActionSheetController, Platform, ToastController, IonList, NavController } from '@ionic/angular';
+import { ActionSheetController, Platform, ToastController, NavController } from '@ionic/angular';
 import { ChangeDetectorRef } from '@angular/core';
 
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
@@ -52,7 +52,6 @@ export class HomePage {
 
   isRecipeFormActive = false;
 
-  //@ViewChild('mylist', { static: false }) mylist: IonList;
 
   constructor(private storageService: StorageService,
     private tts: TextToSpeech,
@@ -139,10 +138,14 @@ export class HomePage {
       // Let's define a command.
       var commands = {
         'test': function () {
+          annyang.pause();
           alert('Hello world!');
+          setTimeout(() => {annyang.resume();},1000);
         },
         'Gotuj *nazwaPrzepisu': function (nazwaPrzepisu) {
+          annyang.pause();
           alert('Rozpoczynam gotowanie ' + nazwaPrzepisu);
+          setTimeout(() => {annyang.resume();},1000);
         }
       };
       // Add our commands to annyang
@@ -207,7 +210,7 @@ export class HomePage {
     this.resetMockRecipe();
   }
 
-  resetMockRecipe(){
+  resetMockRecipe() {
     this.mockRecipe = {
       id: Date.now(),
       title: 'Nazwa przepisu',
@@ -249,7 +252,7 @@ export class HomePage {
     return timesInSeconds;
   }
 
-  initializeFormattedTimes(){
+  initializeFormattedTimes() {
     this.mockRecipe.stepTimes.forEach(stepTime => {
       this.formattedTimes.push(this.convertSecondsToDateString(stepTime));
     });
@@ -311,11 +314,11 @@ export class HomePage {
 
   copyFileToLocalDirectory(namePath, currentName, newFileName) {
     this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
-        let filePath = this.file.dataDirectory + newFileName;
-        let resourcePath = this.storageService.getImageResourcePath(filePath);
-        this.mockRecipe.image = <ImageReference>{name:newFileName, resourcePath, filePath};
+      let filePath = this.file.dataDirectory + newFileName;
+      let resourcePath = this.storageService.getImageResourcePath(filePath);
+      this.mockRecipe.image = <ImageReference>{ name: newFileName, resourcePath, filePath };
     }, error => {
-        return null;
+      return null;
     });
   }
 
