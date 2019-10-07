@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Recipe, ImageReference } from '../../services/storageService/storage.service';
-import { ThrowStmt } from '@angular/compiler';
+import { StorageService, Recipe } from '../../services/storageService/storage.service';
 
 export interface CookedRecipe {
   recipe: Recipe,
@@ -9,7 +8,6 @@ export interface CookedRecipe {
   timeUntilNextStep: number,
   formattedTimeUntilNextStep: string,
   stepProgressPercentage: number,
-
 }
 
 @Injectable({
@@ -21,14 +19,18 @@ export class CookedRecipesService {
   cookedRecipes = [];
   timer;
 
-  constructor() {
-    this.startTimer();
-  }
+  constructor(private storageService: StorageService,
+  ) {}
 
   startTimer() {
     if (this.timer)
       clearInterval(this.timer);
     this.timer = setInterval(() => {
+      if(this.cookedRecipes.length <= 0)
+        {
+          this.stopTimer();
+          return;
+        }
       this.cookedRecipes.forEach(cookedRecipe => {
         if (cookedRecipe.timeUntilNextStep <= 0) {
           cookedRecipe.currentStepIndex++;
@@ -39,7 +41,10 @@ export class CookedRecipesService {
             cookedRecipe.stepProgressPercentage = 0;
           }
           else
-            this.stopCookingRecipe(cookedRecipe.id);
+              {
+                this.stopCookingRecipe(cookedRecipe.recipe.id);
+                this.storageService.increasePopularity(cookedRecipe.recipe);
+              }
         }
         else {
           cookedRecipe.timeUntilNextStep--;
@@ -48,6 +53,14 @@ export class CookedRecipesService {
         }
       });
     }, 1000);
+  }
+
+  stopTimer(){
+    if (this.timer)
+      {
+        clearInterval(this.timer);
+        this.timer = false;
+      }
   }
 
   startCookingRecipe(Recipe) {
@@ -59,7 +72,14 @@ export class CookedRecipesService {
       formattedTimeUntilNextStep: this.convertSecondsToDateString(Recipe.stepTimes[0]),
       stepProgressPercentage: 0,
     }
-    this.cookedRecipes.push(newCookedRecipe);
+    if(this.timer){
+      this.cookedRecipes.push(newCookedRecipe);
+    }
+    else{
+      this.cookedRecipes.push(newCookedRecipe);
+      this.startTimer();
+    }
+    this.storageService.increasePopularity(Recipe);
   }
 
   stopCookingRecipe(id) {

@@ -34,9 +34,9 @@ export class StorageService {
     private camera: Camera,
     private file: File,
     private webview: WebView,
-    private filePath: FilePath) { }
+    private filePath: FilePath,
+    ) { }
 
-  // CREATE
   addRecipe(Recipe: Recipe): Promise<any> {
     return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
       if (recipes) {
@@ -48,7 +48,6 @@ export class StorageService {
     });
   }
 
-  // READ
   getRecipes(): Promise<Recipe[]> {
     return this.storage.get(RECIPES_KEY);
   }
@@ -61,10 +60,17 @@ export class StorageService {
         }
       }
     });
-
   }
 
-  // UPDATE
+  getRecipeByTitle(recipeTitle:string){
+    this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
+      for (let r of recipes) {
+        if (r.title === recipeTitle) {
+          return r;
+        }
+      }});
+  }
+
   updateRecipe(Recipe: Recipe): Promise<any> {
     return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
       if (!recipes || recipes.length === 0) {
@@ -85,14 +91,13 @@ export class StorageService {
     });
   }
 
-  // DELETE
   deleteRecipe(id: number): Promise<Recipe> {
     return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
       if (!recipes || recipes.length === 0) {
         return null;
       }
 
-      let toKeep: Recipe[] = [];
+      var toKeep: Recipe[] = [];
 
       for (let i of recipes) {
         if (i.id !== id) {
@@ -101,6 +106,11 @@ export class StorageService {
       }
       return this.storage.set(RECIPES_KEY, toKeep);
     });
+  }
+
+  increasePopularity(Recipe:Recipe){
+    Recipe.popularity++;
+    this.updateRecipe(Recipe);
   }
 
   getImageResourcePath(img) {

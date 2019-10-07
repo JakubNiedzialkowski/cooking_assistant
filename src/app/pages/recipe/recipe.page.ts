@@ -22,18 +22,6 @@ export class RecipePage implements OnInit {
 
   formattedTimes = [];
 
-
-  // mockRecipe: Recipe = {
-  //   id: null,
-  //   title: '',
-  //   steps: [],
-  //   stepTimes: [],
-  //   ingredients: [],
-  //   ingredientAmounts: [],
-  //   image: null,
-  //   popularity: null,
-  // };
-
   isRecipeCooked = false;
 
   isIngredientListVisible = false;
@@ -304,6 +292,5 @@ export class RecipePage implements OnInit {
   trackById(index, item) {
     return index;
   }
-
 
 }

@@ -1,9 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ComponentFactoryResolver } from '@angular/core';
 
-import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
-import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+import { TtsManagerService } from '../../services/ttsManager/tts-manager.service';
+
 
 import { StorageService, Recipe, ImageReference } from '../../services/storageService/storage.service';
+import { CookedRecipesService } from '../../services/cookedRecipeService/cooked-recipes.service';
+import { SpeechrecognitionService } from '../../services/speechRecognition/speechrecognition.service';
 
 import { ActionSheetController, Platform, ToastController, NavController } from '@ionic/angular';
 import { ChangeDetectorRef } from '@angular/core';
@@ -13,8 +15,6 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 import { File } from '@ionic-native/File/ngx';
 
 import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications/ngx';
-
-declare var annyang: any;
 
 @Component({
   selector: 'app-home',
@@ -51,12 +51,13 @@ export class HomePage {
   commands = {};
 
   isRecipeFormActive = false;
+  isAnnyangStarted = true;
 
 
   constructor(private storageService: StorageService,
-    private tts: TextToSpeech,
-    private speechRecognition: SpeechRecognition,
-    private cd: ChangeDetectorRef,
+    private cookedRecipes: CookedRecipesService,
+    private tts: TtsManagerService,
+    private speechRecognition: SpeechrecognitionService,
     private plt: Platform,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
@@ -72,6 +73,12 @@ export class HomePage {
       this.rate = 1;
       // this.localNotifications.on('click').subscribe(result => {
       // });
+    });
+
+    plt.backButton.subscribeWithPriority(0, ()=>{
+      if(this.isRecipeFormActive){
+        this.hideRecipeForm();
+      }
     });
   }
 
@@ -104,16 +111,8 @@ export class HomePage {
     toast.present();
   }
 
-  //TTS
-
-  playText(message) {
-    this.tts.speak({
-      text: message.toString(),
-      locale: this.locale,
-      rate: this.rate,
-    })
-      .then(() => console.log('Success'))
-      .catch((reason: any) => console.log(reason));
+  ttsTest(message:string){
+    this.tts.addMessage(message);
   }
 
   //NOTIFICATIONS
@@ -121,38 +120,36 @@ export class HomePage {
   notificationtest() {
     this.localNotifications.schedule({
       id: 1,
-      title: 'Tytuł notyfikacji',
-      text: 'Pomocnik kuchenny notyfikacja',
-      data: { mydata: 'My hidden message this is' },
+      title: 'Dodano nowy przepis!',
+      text: this.recipes[this.recipes.length].title,
+      //data: { mydata: '' },
       trigger: { in: 5, unit: ELocalNotificationTriggerUnit.SECOND },
       foreground: true
     });
   }
 
-  // SPEECH RECOGNITION
+  toggleSpeechRecognition(){
+    this.speechRecognition.toggleSpeechRecognition();
+  }
 
-  annyangTest() {
-    if (annyang) {
-      annyang.setLanguage('pl');
-      annyang.debug(true);
-      // Let's define a command.
-      var commands = {
-        'test': function () {
-          annyang.pause();
-          alert('Hello world!');
-          setTimeout(() => {annyang.resume();},1000);
-        },
-        'Gotuj *nazwaPrzepisu': function (nazwaPrzepisu) {
-          annyang.pause();
-          alert('Rozpoczynam gotowanie ' + nazwaPrzepisu);
-          setTimeout(() => {annyang.resume();},1000);
-        }
-      };
-      // Add our commands to annyang
-      annyang.addCommands(commands);
-      // Start listening.
-      annyang.start();
+  startIonicSpeechRecognition(){
+    this.speechRecognition.startIonicSpeechRecognition();
+  }
+
+  reccomendRecipe(){
+    let elligibleRecipes = this.recipes.sort((a,b) => a.popularity-b.popularity);
+    for(var i = elligibleRecipes.length-1; i>=0; i--){
+      if(this.cookedRecipes.isRecipeBeingCooked(elligibleRecipes[i].id))
+        elligibleRecipes.splice(i,1);
     }
+    let randomFactor = this.randomIntFromInterval(1,3);
+    let reccomendedRecipe = elligibleRecipes[elligibleRecipes.length-randomFactor];
+    console.log(elligibleRecipes);
+    this.goToRecipe(reccomendedRecipe);
+  }
+
+  randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   addNewStep() {
@@ -177,14 +174,6 @@ export class HomePage {
     this.mockRecipe.ingredientAmounts.splice(index, 1);
   }
 
-  getPermission() {
-    this.speechRecognition.hasPermission()
-      .then((hasPermission: boolean) => {
-        if (!hasPermission) {
-          this.speechRecognition.requestPermission();
-        }
-      });
-  }
 
   goToRecipe(recipe) {
     this.navController.navigateRoot('/menu/recipe/' + recipe.id);
