@@ -52,7 +52,7 @@ export class StorageService {
     return this.storage.get(RECIPES_KEY);
   }
 
-  getRecipeById(recipeId: number) {
+  getRecipeById(recipeId: number): Promise<Recipe> {
     return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
       for (let r of recipes) {
         if (r.id === recipeId) {
@@ -62,13 +62,14 @@ export class StorageService {
     });
   }
 
-  getRecipeByTitle(recipeTitle:string){
-    this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
+  getRecipeByTitle(recipeTitle:string): Promise<Recipe>{
+    return this.storage.get(RECIPES_KEY).then((recipes: Recipe[]) => {
       for (let r of recipes) {
-        if (r.title === recipeTitle) {
+        if (r.title.toLowerCase() === recipeTitle.toLowerCase()) {
           return r;
         }
-      }});
+      }
+    });
   }
 
   updateRecipe(Recipe: Recipe): Promise<any> {

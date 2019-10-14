@@ -1,14 +1,11 @@
-import { Component, ViewChild, ComponentFactoryResolver } from '@angular/core';
-
-import { TtsManagerService } from '../../services/ttsManager/tts-manager.service';
-
+import { Component } from '@angular/core';
 
 import { StorageService, Recipe, ImageReference } from '../../services/storageService/storage.service';
 import { CookedRecipesService } from '../../services/cookedRecipeService/cooked-recipes.service';
 import { SpeechrecognitionService } from '../../services/speechRecognition/speechrecognition.service';
+import { TtsManagerService } from '../../services/ttsManager/tts-manager.service';
 
 import { ActionSheetController, Platform, ToastController, NavController } from '@ionic/angular';
-import { ChangeDetectorRef } from '@angular/core';
 
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
@@ -36,19 +33,10 @@ export class HomePage {
   };
   formattedTimes = [];
 
-  //TTS
-  locale: string;
-  rate: number;
-
   //STORAGE
   recipes: Recipe[] = [];
   recipesToDisplay: Recipe[] = [];
   newRecipe: Recipe = <Recipe>{};
-
-  //SPEECH RECOGNITION
-  matches: String[];
-  isRecording = false;
-  commands = {};
 
   isRecipeFormActive = false;
   isAnnyangStarted = true;
@@ -69,10 +57,6 @@ export class HomePage {
   ) {
     this.plt.ready().then(() => {
       this.loadRecipes();
-      this.locale = 'pl-PL';
-      this.rate = 1;
-      // this.localNotifications.on('click').subscribe(result => {
-      // });
     });
 
     plt.backButton.subscribeWithPriority(0, ()=>{
@@ -91,7 +75,6 @@ export class HomePage {
       this.loadRecipes();
     });
     this.hideRecipeForm();
-    this.notificationtest();
   }
 
   // READ
@@ -115,25 +98,14 @@ export class HomePage {
     this.tts.addMessage(message);
   }
 
-  //NOTIFICATIONS
-
-  notificationtest() {
-    this.localNotifications.schedule({
-      id: 1,
-      title: 'Dodano nowy przepis!',
-      text: this.recipes[this.recipes.length].title,
-      //data: { mydata: '' },
-      trigger: { in: 5, unit: ELocalNotificationTriggerUnit.SECOND },
-      foreground: true
-    });
-  }
-
   toggleSpeechRecognition(){
     this.speechRecognition.toggleSpeechRecognition();
   }
 
-  startIonicSpeechRecognition(){
-    this.speechRecognition.startIonicSpeechRecognition();
+  regexTest(str){
+    var regex = new RegExp("^Gotuj ");
+    str = str.replace(regex,"");
+    console.log(str);
   }
 
   reccomendRecipe(){

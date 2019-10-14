@@ -24,6 +24,7 @@ const routes: Routes = [
           ]
       },
       { path: 'active-recipes', loadChildren: '../active-recipes/active-recipes.module#ActiveRecipesPageModule' },
+      { path: 'settings', loadChildren: '../settings/settings/settings.module#SettingsPageModule' },
     ]
   },
   {

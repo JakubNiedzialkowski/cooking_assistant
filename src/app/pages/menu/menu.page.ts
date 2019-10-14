@@ -19,6 +19,10 @@ export class MenuPage implements OnInit {
       url: '/menu/active-recipes'
     },
     {
+      title: 'Ustawienia',
+      url: '/menu/settings'
+    },
+    {
       title: 'Informacje o aplikacji',
       url: '/menu/about'
     },

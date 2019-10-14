@@ -14,6 +14,7 @@ export class TtsManagerService {
   processingTimer;
 
   isMessageBeingPlayed = false;
+  isTtsEnabled = true;
 
   constructor(private tts: TextToSpeech,
   ) {
@@ -30,48 +31,59 @@ export class TtsManagerService {
       locale: this.locale,
       rate: this.rate,
     })
-      .then(() => setTimeout(() => {this.isMessageBeingPlayed = false;},1000))
-      .catch((reason: any) => setTimeout(() => {this.isMessageBeingPlayed = false;},1000));
-      
+      .then(() => setTimeout(() => { this.isMessageBeingPlayed = false; }, 1000))
+      .catch((reason: any) => setTimeout(() => { this.isMessageBeingPlayed = false; }, 1000));
+
   }
 
-  playMessage(){
-    if(this.messagesToPlay.length>0 && !this.isMessageBeingPlayed){
+  playMessage() {
+    if (this.messagesToPlay.length > 0 && !this.isMessageBeingPlayed) {
       this.playText(this.messagesToPlay[0]);
       this.messagesToPlay.splice(0, 1);
-  }
+    }
   }
 
   addMessage(message: string) {
-    if (this.processingTimer) {
-      this.messagesToPlay.push(message);
-    }
-    else {
-      this.messagesToPlay.push(message);
-      this.startTimer();
+    if (this.isTtsEnabled) {
+      if (this.processingTimer) {
+        this.messagesToPlay.push(message);
+      }
+      else {
+        this.messagesToPlay.push(message);
+        this.startTimer();
+      }
     }
   }
 
   startTimer() {
-    if (this.processingTimer)
-      clearInterval(this.processingTimer);
+    if (this.isTtsEnabled) {
+      if (this.processingTimer)
+        clearInterval(this.processingTimer);
       this.playMessage();
-    this.processingTimer = setInterval(() => {
-      if (this.messagesToPlay.length <= 0) {
-        this.stopTimer();
-      }
-      else {
-        this.playMessage();
-      }
-    }, 5000);
+      this.processingTimer = setInterval(() => {
+        if (this.messagesToPlay.length <= 0) {
+          this.stopTimer();
+        }
+        else {
+          this.playMessage();
+        }
+      }, 5000);
+    }
   }
 
   stopTimer() {
-    if (this.processingTimer)
-      {
-        clearInterval(this.processingTimer);
-        this.processingTimer = false;
-      }
+    if (this.processingTimer) {
+      clearInterval(this.processingTimer);
+      this.processingTimer = false;
+    }
+  }
+
+  enableService() {
+    this.isTtsEnabled = true;
+  }
+
+  disableService() {
+    this.isTtsEnabled = false;
   }
 
 }

@@ -29,15 +29,16 @@
           </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col>
-              <ion-button size="large" class="ion-text-wrap" expand="full" (click)="startIonicSpeechRecognition()">Wykrywanie głosu Ionic
-              </ion-button>
-            </ion-col>
-          </ion-row>
+          <ion-col>
+            <ion-button size="large" class="ion-text-wrap" expand="full" (click)="toggleSpeechRecognition()">Test Speech
+              Recognition
+            </ion-button>
+          </ion-col>
+        </ion-row>
         <ion-row>
           <ion-col size="6">
-            <ion-button size="large" class="ion-text-wrap" expand="full" (click)="toggleSpeechRecognition()">Test annyang!
-            </ion-button>
+            <ion-button size="large" class="ion-text-wrap" expand="full" (click)="regexTest('Gotuj frytki')">
+              Regex</ion-button>
           </ion-col>
           <ion-col size="6">
             <ion-button size="large" class="ion-text-wrap" expand="full"

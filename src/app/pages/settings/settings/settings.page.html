@@ -1,0 +1,15 @@
+<ion-header>
+    <ion-toolbar color="primary">
+      <ion-buttons color="primary" slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Ustawienia</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-item (click)="applyChanges()">
+      <ion-checkbox *ngIf="settings" [(ngModel)]="settings.isTtsEnabled" slot="start"></ion-checkbox>
+      <ion-label>Synteza mowy</ion-label>
+    </ion-item>
+  </ion-content>

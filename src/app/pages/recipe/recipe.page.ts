@@ -66,6 +66,10 @@ export class RecipePage implements OnInit {
       if (this.isRecipeCooked) {
         this.cookedRecipeData = this.cookedRecipes.getCookedRecipeById(recipeId);
         this.loadedRecipe = this.cookedRecipeData.recipe;
+        if(this.cookedRecipeData.isRecipePaused)
+        this.cookedRecipeData.formattedTimeUntilNextStep = "❚❚";
+        else
+          this.cookedRecipeData.formattedTimeUntilNextStep = this.cookedRecipes.convertSecondsToDateString(this.cookedRecipeData.timeUntilNextStep);
       }
       else {
         this.storageService.getRecipeById(recipeId).then(recipe => {
@@ -85,6 +89,14 @@ export class RecipePage implements OnInit {
   stopCooking() {
     this.cookedRecipes.stopCookingRecipe(this.cookedRecipeData.recipe.id);
     this.isRecipeCooked = false;
+  }
+
+  toggleProgress(){
+    this.cookedRecipeData.isRecipePaused = !this.cookedRecipeData.isRecipePaused;
+    if(this.cookedRecipeData.isRecipePaused)
+      this.cookedRecipeData.formattedTimeUntilNextStep = "❚❚";
+    else
+      this.cookedRecipeData.formattedTimeUntilNextStep = this.cookedRecipeData.formattedTimeUntilNextStep;
   }
 
   editRecipe() {
