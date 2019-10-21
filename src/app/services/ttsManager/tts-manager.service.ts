@@ -45,36 +45,7 @@ export class TtsManagerService {
 
   addMessage(message: string) {
     if (this.isTtsEnabled) {
-      if (this.processingTimer) {
-        this.messagesToPlay.push(message);
-      }
-      else {
-        this.messagesToPlay.push(message);
-        this.startTimer();
-      }
-    }
-  }
-
-  startTimer() {
-    if (this.isTtsEnabled) {
-      if (this.processingTimer)
-        clearInterval(this.processingTimer);
-      this.playMessage();
-      this.processingTimer = setInterval(() => {
-        if (this.messagesToPlay.length <= 0) {
-          this.stopTimer();
-        }
-        else {
-          this.playMessage();
-        }
-      }, 5000);
-    }
-  }
-
-  stopTimer() {
-    if (this.processingTimer) {
-      clearInterval(this.processingTimer);
-      this.processingTimer = false;
+      this.messagesToPlay.push(message);
     }
   }
 

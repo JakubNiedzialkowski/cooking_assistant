@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { NavController } from '@ionic/angular';
+
 import { StorageService, Recipe } from '../../services/storageService/storage.service';
 import { TtsManagerService } from '../../services/ttsManager/tts-manager.service';
 import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications/ngx';
@@ -21,25 +23,17 @@ export interface CookedRecipe {
 export class CookedRecipesService {
 
   cookedRecipes = [];
-  timer;
 
   constructor(private storageService: StorageService,
     private tts: TtsManagerService,
+    private navController: NavController,
     private notifications: LocalNotifications,
   ) {
     this.notifications.on('click').subscribe(result => {
     });
   }
 
-  startTimer() {
-    if (this.timer)
-      clearInterval(this.timer);
-    this.timer = setInterval(() => {
-      if(this.cookedRecipes.length <= 0)
-        {
-          this.stopTimer();
-          return;
-        }
+  handleCookedRecipes() {
       this.cookedRecipes.forEach(cookedRecipe => {
         if(!cookedRecipe.isRecipePaused){
           if (cookedRecipe.timeUntilNextStep <= 0) {
@@ -49,7 +43,7 @@ export class CookedRecipesService {
               this.displayNotification(cookedRecipe.recipe.title, "Zakończono krok " + cookedRecipe.currentStep);
               cookedRecipe.currentStep = cookedRecipe.recipe.steps[cookedRecipe.currentStepIndex];
               cookedRecipe.timeUntilNextStep = cookedRecipe.recipe.stepTimes[cookedRecipe.currentStepIndex];
-              cookedRecipe.formattedTimeUntilNextStep = this.convertSecondsToDateString(cookedRecipe.timeUntilNextStep);
+              cookedRecipe.formattedTimeUntilNextStep = "❚❚";
               cookedRecipe.stepProgressPercentage = 0;
               cookedRecipe.isRecipePaused = true;
               this.tts.addMessage("Następny krok w przepisie "+ cookedRecipe.recipe.title + " to: " +cookedRecipe.currentStep);
@@ -60,6 +54,7 @@ export class CookedRecipesService {
                   this.tts.addMessage("Zakończono gotowanie przepisu: " + cookedRecipe.recipe.title);
                   this.storageService.increasePopularity(cookedRecipe.recipe);
                   this.stopCookingRecipe(cookedRecipe.recipe.id);
+                  this.goToCookedRecipesPage();
                 }
           }
           else {
@@ -69,15 +64,6 @@ export class CookedRecipesService {
           }
         }
       });
-    }, 1000);
-  }
-
-  stopTimer(){
-    if (this.timer)
-      {
-        clearInterval(this.timer);
-        this.timer = false;
-      }
   }
 
   startCookingRecipe(Recipe:Recipe) {
@@ -90,13 +76,7 @@ export class CookedRecipesService {
       stepProgressPercentage: 0,
       isRecipePaused:false,
     }
-    if(this.timer){
-      this.cookedRecipes.push(newCookedRecipe);
-    }
-    else{
-      this.cookedRecipes.push(newCookedRecipe);
-      this.startTimer();
-    }
+    this.cookedRecipes.push(newCookedRecipe);
     this.tts.addMessage("Rozpoczęto gotowanie przepisu: " + Recipe.title);
     this.storageService.increasePopularity(Recipe);
   }
@@ -112,7 +92,7 @@ export class CookedRecipesService {
 
   pauseCookingRecipe(id:number){
     this.cookedRecipes.forEach(cookedRecipe =>{
-      if(cookedRecipe.id === id && !cookedRecipe.isRecipePaused){
+      if(cookedRecipe.recipe.id === id && !cookedRecipe.isRecipePaused){
         cookedRecipe.isRecipePaused = true;
         cookedRecipe.formattedTimeUntilNextStep = "❚❚";
         this.tts.addMessage("Wstrzymano gotowanie przepisu: " + cookedRecipe.title);
@@ -123,7 +103,7 @@ export class CookedRecipesService {
 
   resumeCookingRecipe(id:number){
     this.cookedRecipes.forEach(cookedRecipe =>{
-      if(cookedRecipe.id === id && cookedRecipe.isRecipePaused){
+      if(cookedRecipe.recipe.id === id && cookedRecipe.isRecipePaused){
         cookedRecipe.isRecipePaused = false;
         cookedRecipe.formattedTimeUntilNextStep = this.convertSecondsToDateString(cookedRecipe.timeUntilNextStep);
         this.tts.addMessage("Wznowiono gotowanie przepisu: " + cookedRecipe.title);
@@ -206,9 +186,7 @@ export class CookedRecipesService {
   }
 
   goToPreviousStep(cookedRecipeData) {
-    this.tts.addMessage("za pierwszym");
     if (cookedRecipeData.currentStepIndex > 0) {
-      this.tts.addMessage("za drugim");
       cookedRecipeData.currentStepIndex--;
       cookedRecipeData.currentStep = cookedRecipeData.recipe.steps[cookedRecipeData.currentStepIndex];
       cookedRecipeData.timeUntilNextStep = cookedRecipeData.recipe.stepTimes[cookedRecipeData.currentStepIndex];
@@ -233,6 +211,10 @@ export class CookedRecipesService {
       trigger: { in: 5, unit: ELocalNotificationTriggerUnit.SECOND },
       foreground: true
     });
+  }
+
+  goToCookedRecipesPage() {
+    this.navController.navigateRoot('/menu/active-recipes/');
   }
 
 }

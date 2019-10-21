@@ -22,11 +22,7 @@ export class SpeechrecognitionService {
     private navController: NavController,
     private tts: TtsManagerService,
     private toastController: ToastController,
-  ) { 
-    this.getPermission();
-    setTimeout(this.startSpeechRecognition, 1000);
-    
-  }
+  ) { }
 
   getPermission() {
     this.speechRecognition.hasPermission()
@@ -38,17 +34,11 @@ export class SpeechrecognitionService {
   }
 
   startSpeechRecognition() {
-    this.speechRecognition.startListening({ language: 'pl-Pl', showPopup: false, matches: 1 }).subscribe((matches: string[]) => {this.recognizeCommand(matches[0]); this.isSpeechRecognitionActive = false; },
-          error => { this.isSpeechRecognitionActive = false; });
-    if (this.refreshTimer)
-      clearInterval(this.refreshTimer);
-    this.refreshTimer = setInterval(() => {
-      if (!this.isSpeechRecognitionActive && this.speechRecognition.isRecognitionAvailable()) {
-        this.isSpeechRecognitionActive = true;
-        this.speechRecognition.startListening({ language: 'pl-Pl', showPopup: false, matches: 1 }).subscribe((matches: string[]) => {this.recognizeCommand(matches[0]); this.isSpeechRecognitionActive = false; },
-          error => { this.isSpeechRecognitionActive = false; });
-      }
-    }, 1000);
+    if (!this.isSpeechRecognitionActive && this.speechRecognition.isRecognitionAvailable()) {
+      this.isSpeechRecognitionActive = true;
+      this.speechRecognition.startListening({ language: 'pl-Pl', showPopup: false, matches: 1 }).subscribe((matches: string[]) => { this.recognizeCommand(matches[0]); this.isSpeechRecognitionActive = false; },
+        error => { this.isSpeechRecognitionActive = false; });
+    }
   }
 
   stopSpeechRecognition() {
@@ -103,13 +93,12 @@ export class SpeechrecognitionService {
       this.goToNextStep(message);
       return;
     }
-    regex = new RegExp('^Poprzedni krok ', 'i');
+    regex = new RegExp('^Cofnij krok ', 'i');
     if (regex.test(message)) {
       message = message.replace(regex, "");
       this.goToPreviousStep(message);
       return;
     }
-    this.tts.addMessage("Nie rozpoznano komendy: " + message);
   }
 
   startCooking(recipeTitle) {
@@ -139,48 +128,51 @@ export class SpeechrecognitionService {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
       this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
     }
-    else
-      {
-        this.cookedRecipes.stopCookingRecipe(recipe.recipe.id);
-        this.tts.addMessage("Zakończono gotowanie przepisu: " + recipe.recipe.title);
-      }
+    else {
+      this.cookedRecipes.stopCookingRecipe(recipe.recipe.id);
+      this.tts.addMessage("Zakończono gotowanie przepisu: " + recipe.recipe.title);
+    }
   }
 
   pauseRecipe(recipeTitle) {
-    var recipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
+    let cookedRecipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
 
-    if (recipe == null) {
+    if (cookedRecipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
       this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
     }
     else
-      this.cookedRecipes.pauseCookingRecipe(recipe.recipe.id);
+      this.cookedRecipes.pauseCookingRecipe(cookedRecipe.recipe.id);
+
   }
 
   unpauseRecipe(recipeTitle) {
-    var recipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
+    let cookedRecipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
 
-    if (recipe == null) {
+    if (cookedRecipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
       this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
     }
     else
-      this.cookedRecipes.resumeCookingRecipe(recipe.recipe.id);
+      this.cookedRecipes.resumeCookingRecipe(cookedRecipe.recipe.id);
+      
   }
 
   goToNextStep(recipeTitle) {
-    var recipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
+    let recipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
 
     if (recipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
       this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
     }
-    else
+    else 
       this.cookedRecipes.goToNextStep(recipe);
+    
+
   }
 
   goToPreviousStep(recipeTitle) {
-    var recipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
+    let recipe = this.cookedRecipes.getCookedRecipeByTitle(recipeTitle);
 
     if (recipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
@@ -191,21 +183,20 @@ export class SpeechrecognitionService {
   }
 
   goToRecipe(recipeTitle) {
-    var recipe;
+    let recipe;
     this.storageService.getRecipeByTitle(recipeTitle).then(result => {
-      if (result != null)
-        {
-          recipe = result;
-          this.navController.navigateRoot('/menu/recipe/' + recipe.id);
-        }
+      if (result != null) {
+        recipe = result;
+        this.navController.navigateRoot('/menu/recipe/' + recipe.id);
+      }
       else {
         this.showToast("Nie znaleziono podanego przepisu! Proszę spróbować ponownie.");
         this.tts.addMessage("Nie znaleziono podanego przepisu! Proszę spróbować ponownie.");
       }
     });
-
-    
   }
+
+
 
   async showToast(msg) {
     const toast = await this.toastController.create({

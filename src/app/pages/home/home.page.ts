@@ -4,6 +4,8 @@ import { StorageService, Recipe, ImageReference } from '../../services/storageSe
 import { CookedRecipesService } from '../../services/cookedRecipeService/cooked-recipes.service';
 import { SpeechrecognitionService } from '../../services/speechRecognition/speechrecognition.service';
 import { TtsManagerService } from '../../services/ttsManager/tts-manager.service';
+import { TimerService } from '../../services/timerService/timer.service';
+import { SettingsService } from 'src/app/services/settings/settings.service';
 
 import { ActionSheetController, Platform, ToastController, NavController } from '@ionic/angular';
 
@@ -52,14 +54,17 @@ export class HomePage {
     private camera: Camera,
     private filePath: FilePath,
     private file: File,
-    private localNotifications: LocalNotifications,
     private navController: NavController,
+    private timer: TimerService,
+    private settings: SettingsService,
   ) {
     this.plt.ready().then(() => {
       this.loadRecipes();
+      this.timer.startService();
+      this.settings.startService();
     });
 
-    plt.backButton.subscribeWithPriority(0, ()=>{
+    this.plt.backButton.subscribeWithPriority(0, ()=>{
       if(this.isRecipeFormActive){
         this.hideRecipeForm();
       }

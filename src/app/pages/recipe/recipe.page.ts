@@ -96,7 +96,7 @@ export class RecipePage implements OnInit {
     if(this.cookedRecipeData.isRecipePaused)
       this.cookedRecipeData.formattedTimeUntilNextStep = "❚❚";
     else
-      this.cookedRecipeData.formattedTimeUntilNextStep = this.cookedRecipeData.formattedTimeUntilNextStep;
+      this.cookedRecipeData.formattedTimeUntilNextStep = this.convertSecondsToDateString(this.cookedRecipeData.timeUntilNextStep);
   }
 
   editRecipe() {
