@@ -9,11 +9,12 @@
 
 <!-- Recipe details -->
 <ion-content *ngIf="!isEditPanelVisible && !isRecipeCooked">
-    <!-- % doesn't work for reasources -->
+
+
   <div style="max-height:30%"> 
-    <ion-img *ngIf="loadedRecipe?.image === null" class="center"
-      src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+    <img *ngIf="loadedRecipe?.image === null" class="center" src="assets/defaultRecipe.jpg">
   </div>
+  
   <ion-item style="max-height:200px">
     <ion-img *ngIf="loadedRecipe?.image != null" class="center" [src]="loadedRecipe?.image.resourcePath">
     </ion-img>
@@ -198,13 +199,13 @@
 </ion-content>
 
 <ion-footer *ngIf="!isEditPanelVisible && !isRecipeCooked">
-  <ion-button (click)="startCooking()" size="large" expand="block" shape="round" color="primary">
-    Rozpocznij gotowanie
+  <ion-button (click)="startCooking()" size="large" expand="block" shape="round" color="primary" class="ion-text-wrap">
+    Rozpocznij przygotowywanie
   </ion-button>
 </ion-footer>
 
 <ion-footer *ngIf="!isEditPanelVisible && isRecipeCooked">
-  <ion-button (click)="stopCooking()" size="large" expand="block" shape="round" color="danger">
-    Przerwij gotowanie
+  <ion-button (click)="stopCooking()" size="large" expand="block" shape="round" color="danger" class="ion-text-wrap">
+    Przerwij przygotowywanie
   </ion-button>
 </ion-footer>

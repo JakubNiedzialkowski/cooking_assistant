@@ -17,7 +17,6 @@ export class SettingsPage implements OnInit {
 
   ngOnInit() {
     this.settingsService.getSettings().then((savedSettings:Settings) =>{
-      console.log(savedSettings);
       this.settings = savedSettings;
     });
   }

@@ -14,7 +14,11 @@ export interface CookedRecipe {
   formattedTimeUntilNextStep: string,
   stepProgressPercentage: number,
   isRecipePaused:boolean,
+  timeUntilReminder:number
 }
+
+const reminderTime = 60;
+const longReminderTime = 120;
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +43,7 @@ export class CookedRecipesService {
           if (cookedRecipe.timeUntilNextStep <= 0) {
             cookedRecipe.currentStepIndex++;
             if (cookedRecipe.currentStepIndex < cookedRecipe.recipe.steps.length) {
-              this.tts.addMessage("Zakończono krok " + cookedRecipe.currentStep +" w przepisie " + cookedRecipe.recipe.title + ". Aby kontynuować gotowanie przepisu użyj komendy 'Wznów gotowanie'.");
+              this.tts.addMessage("Zakończono krok " + cookedRecipe.currentStep +" w przepisie " + cookedRecipe.recipe.title + ". Aby kontynuować przygotowywanie przepisu użyj komendy 'Wznów przygotowywanie'.");
               this.displayNotification(cookedRecipe.recipe.title, "Zakończono krok " + cookedRecipe.currentStep);
               cookedRecipe.currentStep = cookedRecipe.recipe.steps[cookedRecipe.currentStepIndex];
               cookedRecipe.timeUntilNextStep = cookedRecipe.recipe.stepTimes[cookedRecipe.currentStepIndex];
@@ -50,8 +54,8 @@ export class CookedRecipesService {
             }
             else
                 {
-                  this.displayNotification(cookedRecipe.recipe.title, "Zakończono gotowanie przepisu");
-                  this.tts.addMessage("Zakończono gotowanie przepisu: " + cookedRecipe.recipe.title);
+                  this.displayNotification(cookedRecipe.recipe.title, "Zakończono przygotowywanie przepisu");
+                  this.tts.addMessage("Zakończono przygotowywanie przepisu: " + cookedRecipe.recipe.title);
                   this.storageService.increasePopularity(cookedRecipe.recipe);
                   this.stopCookingRecipe(cookedRecipe.recipe.id);
                   this.goToCookedRecipesPage();
@@ -61,6 +65,15 @@ export class CookedRecipesService {
             cookedRecipe.timeUntilNextStep--;
             cookedRecipe.stepProgressPercentage = this.calculateProgressPercentage(cookedRecipe.timeUntilNextStep, cookedRecipe.recipe.stepTimes[cookedRecipe.currentStepIndex]);
             cookedRecipe.formattedTimeUntilNextStep = this.convertSecondsToDateString(cookedRecipe.timeUntilNextStep);
+          }
+        }
+        else {
+          if(cookedRecipe.timeUntilReminder>0)
+            cookedRecipe.timeUntilReminder--;
+          else{
+            //to do add message generator
+            this.playReminderMessage(cookedRecipe);
+            cookedRecipe.timeUntilReminder = longReminderTime;
           }
         }
       });
@@ -75,9 +88,10 @@ export class CookedRecipesService {
       formattedTimeUntilNextStep: this.convertSecondsToDateString(Recipe.stepTimes[0]),
       stepProgressPercentage: 0,
       isRecipePaused:false,
+      timeUntilReminder:reminderTime,
     }
     this.cookedRecipes.push(newCookedRecipe);
-    this.tts.addMessage("Rozpoczęto gotowanie przepisu: " + Recipe.title);
+    this.tts.addMessage("Rozpoczęto przygotowywanie przepisu: " + Recipe.title);
     this.storageService.increasePopularity(Recipe);
   }
 
@@ -95,7 +109,8 @@ export class CookedRecipesService {
       if(cookedRecipe.recipe.id === id && !cookedRecipe.isRecipePaused){
         cookedRecipe.isRecipePaused = true;
         cookedRecipe.formattedTimeUntilNextStep = "❚❚";
-        this.tts.addMessage("Wstrzymano gotowanie przepisu: " + cookedRecipe.title);
+        cookedRecipe.timeUntilReminder=longReminderTime;
+        this.tts.addMessage("Wstrzymano przygotowywanie przepisu: " + cookedRecipe.recipe.title);
         return;
       }
     });
@@ -106,7 +121,8 @@ export class CookedRecipesService {
       if(cookedRecipe.recipe.id === id && cookedRecipe.isRecipePaused){
         cookedRecipe.isRecipePaused = false;
         cookedRecipe.formattedTimeUntilNextStep = this.convertSecondsToDateString(cookedRecipe.timeUntilNextStep);
-        this.tts.addMessage("Wznowiono gotowanie przepisu: " + cookedRecipe.title);
+        cookedRecipe.timeUntilReminder=reminderTime;
+        this.tts.addMessage("Wznowiono przygotowywanie przepisu: " + cookedRecipe.recipe.title);
         return;
       }
     });
@@ -215,6 +231,19 @@ export class CookedRecipesService {
 
   goToCookedRecipesPage() {
     this.navController.navigateRoot('/menu/active-recipes/');
+  }
+
+  playReminderMessage(cookedRecipe:CookedRecipe){
+    const messages = ["Czy nie zapomniałeś o przepisie " + cookedRecipe.recipe.title + "? Jego przygotowywanie jest wstrzymane.", 
+    "Czy pamiętasz wciąż o przepisie " + cookedRecipe.recipe.title + "? Jego przygotowywanie jest wstrzymane.",
+    "Przepis " + cookedRecipe.recipe.title + " jest wstrzymany od dłuższego czasu."];
+    
+    let random = this.randomIntFromInterval(0, messages.length-1);
+    this.tts.addMessage(messages[random]);
+  }
+
+  randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
 }

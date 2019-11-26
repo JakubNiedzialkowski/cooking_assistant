@@ -57,13 +57,13 @@ export class SpeechrecognitionService {
   }
 
   recognizeCommand(message: string) {
-    var regex = new RegExp('^Gotuj ', 'i');
+    var regex = new RegExp('^Przygotuj ', 'i');
     if (regex.test(message)) {
       message = message.replace(regex, "");
       this.startCooking(message);
       return;
     }
-    regex = new RegExp('^Zakończ gotowanie ', 'i');
+    regex = new RegExp('^Zakończ przygotowywanie ', 'i');
     if (regex.test(message)) {
       message = message.replace(regex, "");
       this.stopCooking(message);
@@ -75,13 +75,13 @@ export class SpeechrecognitionService {
       this.goToRecipe(message);
       return;
     }
-    regex = new RegExp('^Wstrzymaj gotowanie ', 'i');
+    regex = new RegExp('^Wstrzymaj przygotowywanie ', 'i');
     if (regex.test(message)) {
       message = message.replace(regex, "");
       this.pauseRecipe(message);
       return;
     }
-    regex = new RegExp('^Wznów gotowanie ', 'i');
+    regex = new RegExp('^Wznów przygotowywanie ', 'i');
     if (regex.test(message)) {
       message = message.replace(regex, "");
       this.unpauseRecipe(message);
@@ -130,7 +130,7 @@ export class SpeechrecognitionService {
     }
     else {
       this.cookedRecipes.stopCookingRecipe(recipe.recipe.id);
-      this.tts.addMessage("Zakończono gotowanie przepisu: " + recipe.recipe.title);
+      this.tts.addMessage("Zakończono przygotowywanie przepisu: " + recipe.recipe.title);
     }
   }
 

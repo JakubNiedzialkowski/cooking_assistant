@@ -99,20 +99,6 @@ export class HomePage {
     toast.present();
   }
 
-  ttsTest(message:string){
-    this.tts.addMessage(message);
-  }
-
-  toggleSpeechRecognition(){
-    this.speechRecognition.toggleSpeechRecognition();
-  }
-
-  regexTest(str){
-    var regex = new RegExp("^Gotuj ");
-    str = str.replace(regex,"");
-    console.log(str);
-  }
-
   reccomendRecipe(){
     let elligibleRecipes = this.recipes.sort((a,b) => a.popularity-b.popularity);
     for(var i = elligibleRecipes.length-1; i>=0; i--){
@@ -121,7 +107,6 @@ export class HomePage {
     }
     let randomFactor = this.randomIntFromInterval(1,3);
     let reccomendedRecipe = elligibleRecipes[elligibleRecipes.length-randomFactor];
-    console.log(elligibleRecipes);
     this.goToRecipe(reccomendedRecipe);
   }
 

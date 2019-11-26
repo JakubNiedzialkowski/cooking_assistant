@@ -17,8 +17,10 @@
       <ion-card (click)='goToRecipe(activeRecipe.recipe)'>
         <ion-img *ngIf="activeRecipe.recipe.image != null" style="max-height:200px"
           [src]="activeRecipe.recipe.image.resourcePath"></ion-img>
-        <ion-img *ngIf="activeRecipe.recipe.image === null" style="max-height:200px"
-          src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+        <img *ngIf="activeRecipe.recipe.image === null" style="max-height:200px"
+          src="assets/defaultRecipe.jpg">
+        <!-- <ion-img *ngIf="activeRecipe.recipe.image === null" style="max-height:200px"
+          src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img> -->
         <div class="card-title">{{ activeRecipe.recipe.title }}</div>
       </ion-card>
     </div>

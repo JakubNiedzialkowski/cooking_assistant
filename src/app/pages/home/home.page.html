@@ -21,39 +21,17 @@
   <ion-list>
 
     <ion-list-header>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-button size="large" class="ion-text-wrap" expand="full" (click)="reccomendRecipe()">Zaproponuj przepis
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-button size="large" class="ion-text-wrap" expand="full" (click)="toggleSpeechRecognition()">Test Speech
-              Recognition
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size="6">
-            <ion-button size="large" class="ion-text-wrap" expand="full" (click)="regexTest('Gotuj frytki')">
-              Regex</ion-button>
-          </ion-col>
-          <ion-col size="6">
-            <ion-button size="large" class="ion-text-wrap" expand="full"
-              (click)="ttsTest('To jest wiadomość testowa. Witaj w aplikacji Pomocnik Kuchenny! Co chcesz ugotować?')">
-              Test TTS</ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-item>
+          <ion-button size="large" expand="block" (click)="reccomendRecipe()">Zaproponuj przepis</ion-button>
+      </ion-item>
     </ion-list-header>
 
     <div class="card-background-page" *ngFor="let recipe of recipesToDisplay">
       <ion-card (click)='goToRecipe(recipe)'>
         <ion-img *ngIf="recipe.image != null" style="max-height:200px" [src]="recipe.image.resourcePath"></ion-img>
-        <ion-img *ngIf="recipe.image === null" style="max-height:200px"
-          src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img>
+        <img *ngIf="recipe.image === null" style="max-height:200px" src="assets/defaultRecipe.jpg">
+        <!-- <ion-img *ngIf="recipe.image === null" style="max-height:200px"
+          src="//tutorialsplane.com/wp-content/uploads/2017/01/tomato-1862857__340.jpg"></ion-img> -->
         <div class="card-title">{{ recipe.title }}</div>
       </ion-card>
     </div>
