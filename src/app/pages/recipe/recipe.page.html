@@ -11,12 +11,12 @@
 <ion-content *ngIf="!isEditPanelVisible && !isRecipeCooked">
 
 
-  <div style="max-height:30%"> 
-    <img *ngIf="loadedRecipe?.image === null" class="center" src="assets/defaultRecipe.jpg">
-  </div>
-  
-  <ion-item style="max-height:200px">
-    <ion-img *ngIf="loadedRecipe?.image != null" class="center" [src]="loadedRecipe?.image.resourcePath">
+  <ion-item *ngIf="loadedRecipe?.image === null" style="max-height:200px">
+    <img class="center" src="assets/defaultRecipe.jpg">
+  </ion-item>
+
+  <ion-item *ngIf="loadedRecipe?.image != null" style="max-height:200px">
+    <ion-img class="center" [src]="loadedRecipe?.image.resourcePath">
     </ion-img>
   </ion-item>
 
