@@ -58,32 +58,52 @@ export class SpeechrecognitionService {
 
   recognizeCommand(message: string) {
     var regex = new RegExp('^Przygotuj ', 'i');
-    if (regex.test(message)) {
-      message = message.replace(regex, "");
+    var regex1 = new RegExp('^Gotuj ', 'i');
+    var regex2 = new RegExp('^Usmaż ', 'i');
+    if (regex.test(message) || regex1.test(message) || regex2.test(message)) {
+      message = message.replace((regex), "");
+      message = message.replace((regex1), "");
+      message = message.replace((regex2), "");
       this.startCooking(message);
       return;
     }
     regex = new RegExp('^Zakończ przygotowywanie ', 'i');
-    if (regex.test(message)) {
-      message = message.replace(regex, "");
+    regex1 = new RegExp('^Zakończ gotowanie ', 'i');
+    regex2 = new RegExp('^Zakończ smażenie ', 'i');
+    if (regex.test(message) || regex1.test(message) || regex2.test(message)) {
+      message = message.replace((regex), "");
+      message = message.replace((regex1), "");
+      message = message.replace((regex2), "");
       this.stopCooking(message);
       return;
     }
     regex = new RegExp('^Otwórz przepis ', 'i');
-    if (regex.test(message)) {
-      message = message.replace(regex, "");
+    regex1 = new RegExp('^Pokaż przepis ', 'i');
+    regex2 = new RegExp('^Wyświetl przepis ', 'i');
+    if (regex.test(message) || regex1.test(message) || regex2.test(message)) {
+      message = message.replace((regex), "");
+      message = message.replace((regex1), "");
+      message = message.replace((regex2), "");
       this.goToRecipe(message);
       return;
     }
     regex = new RegExp('^Wstrzymaj przygotowywanie ', 'i');
-    if (regex.test(message)) {
-      message = message.replace(regex, "");
+    regex1 = new RegExp('^Wstrzymaj gotowanie ', 'i');
+    regex2 = new RegExp('^Wstrzymaj smażenie ', 'i');
+    if (regex.test(message) || regex1.test(message) || regex2.test(message)) {
+      message = message.replace((regex), "");
+      message = message.replace((regex1), "");
+      message = message.replace((regex2), "");
       this.pauseRecipe(message);
       return;
     }
     regex = new RegExp('^Wznów przygotowywanie ', 'i');
-    if (regex.test(message)) {
-      message = message.replace(regex, "");
+    regex1 = new RegExp('^Wznów gotowanie ', 'i');
+    regex2 = new RegExp('^Wznów smażenie ', 'i');
+    if (regex.test(message) || regex1.test(message) || regex2.test(message)) {
+      message = message.replace((regex), "");
+      message = message.replace((regex1), "");
+      message = message.replace((regex2), "");
       this.unpauseRecipe(message);
       return;
     }
@@ -94,8 +114,10 @@ export class SpeechrecognitionService {
       return;
     }
     regex = new RegExp('^Cofnij krok ', 'i');
-    if (regex.test(message)) {
-      message = message.replace(regex, "");
+    regex1 = new RegExp('^Poprzedni krok ', 'i');
+    if (regex.test(message) || regex1.test(message)) {
+      message = message.replace((regex), "");
+      message = message.replace((regex1), "");
       this.goToPreviousStep(message);
       return;
     }
@@ -108,7 +130,7 @@ export class SpeechrecognitionService {
         recipe = result;
       else {
         this.showToast("Nie znaleziono podanego przepisu! Proszę spróbować ponownie.");
-        this.tts.addMessage("Nie znaleziono podanego przepisu! Proszę spróbować ponownie.");
+        this.playRecipeNotFoundMessage(recipeTitle);
       }
       if (this.cookedRecipes.isRecipeBeingCooked(recipe.id)) {
         this.showToast("Przepis jest już gotowany.");
@@ -126,7 +148,7 @@ export class SpeechrecognitionService {
 
     if (recipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
-      this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
+      this.playRecipeIsCookedMessage(recipeTitle);
     }
     else {
       this.cookedRecipes.stopCookingRecipe(recipe.recipe.id);
@@ -139,7 +161,7 @@ export class SpeechrecognitionService {
 
     if (cookedRecipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
-      this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
+      this.playRecipeIsCookedMessage(recipeTitle);
     }
     else
       this.cookedRecipes.pauseCookingRecipe(cookedRecipe.recipe.id);
@@ -151,7 +173,7 @@ export class SpeechrecognitionService {
 
     if (cookedRecipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
-      this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
+      this.playRecipeIsCookedMessage(recipeTitle);
     }
     else
       this.cookedRecipes.resumeCookingRecipe(cookedRecipe.recipe.id);
@@ -163,7 +185,7 @@ export class SpeechrecognitionService {
 
     if (recipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
-      this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
+      this.playRecipeIsCookedMessage(recipeTitle);
     }
     else 
       this.cookedRecipes.goToNextStep(recipe);
@@ -176,7 +198,7 @@ export class SpeechrecognitionService {
 
     if (recipe == null) {
       this.showToast("Podany przepis nie jest obecnie gotowany.");
-      this.tts.addMessage("Podany przepis nie jest obecnie gotowany.");
+      this.playRecipeIsCookedMessage(recipeTitle);
     }
     else
       this.cookedRecipes.goToPreviousStep(recipe);
@@ -191,12 +213,28 @@ export class SpeechrecognitionService {
       }
       else {
         this.showToast("Nie znaleziono podanego przepisu! Proszę spróbować ponownie.");
-        this.tts.addMessage("Nie znaleziono podanego przepisu! Proszę spróbować ponownie.");
+        this.playRecipeNotFoundMessage(recipeTitle);
       }
     });
   }
 
+  playRecipeIsCookedMessage(recipeTitle){
+    const messages = ["Podany przepis nie jest obecnie gotowany.", 
+    "Przepis " + recipeTitle + " nie jest obecnie gotowany.",
+    "Przepis " + recipeTitle + " nie znajduje się na liście gotowanych przepisów."];
+    
+    const random = this.randomIntFromInterval(0, messages.length-1);
+    this.tts.addMessage(messages[random]);
+  }
 
+  playRecipeNotFoundMessage(recipeTitle){
+    const messages = ["Nie znaleziono podanego przepisu! Proszę spróbować ponownie.", 
+    "Nie znaleziono przepisu: " + recipeTitle + ". Proszę spróbować ponownie.",
+    "Nie znaleziono przepisu: " + recipeTitle + ". Proszę powtorzyć komendę lub upewnić się, że podany przepis znajduje się na liście przepisów."];
+    
+    const random = this.randomIntFromInterval(0, messages.length-1);
+    this.tts.addMessage(messages[random]);
+  }
 
   async showToast(msg) {
     const toast = await this.toastController.create({
@@ -204,6 +242,10 @@ export class SpeechrecognitionService {
       duration: 2000
     });
     toast.present();
+  }
+
+  randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
 }

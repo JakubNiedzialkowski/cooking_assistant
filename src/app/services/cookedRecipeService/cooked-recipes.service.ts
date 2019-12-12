@@ -238,7 +238,7 @@ export class CookedRecipesService {
     "Czy pamiętasz wciąż o przepisie " + cookedRecipe.recipe.title + "? Jego przygotowywanie jest wstrzymane.",
     "Przepis " + cookedRecipe.recipe.title + " jest wstrzymany od dłuższego czasu."];
     
-    let random = this.randomIntFromInterval(0, messages.length-1);
+    const random = this.randomIntFromInterval(0, messages.length-1);
     this.tts.addMessage(messages[random]);
   }
 
