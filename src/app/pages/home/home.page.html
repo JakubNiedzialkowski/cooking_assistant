@@ -12,16 +12,10 @@
 </ion-header>
 
 <ion-content *ngIf="!isRecipeFormActive">
-  <ion-fab (click)="displayRecipeForm()" slot="fixed" horizontal="start" vertical="bottom">
-    <ion-fab-button color="success">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
   <ion-list>
 
-    <ion-list-header style="display: flex; justify-content: center;">
-            <ion-button size="large" expand="block" (click)="reccomendRecipe()">Zaproponuj przepis</ion-button>
+    <ion-list-header class=center-button>
+      <ion-button size="large" (click)="reccomendRecipe()">Zaproponuj przepis</ion-button>
     </ion-list-header>
 
     <div class="card-background-page" *ngFor="let recipe of recipesToDisplay">
@@ -35,6 +29,13 @@
     </div>
 
   </ion-list>
+
+  <ion-fab (click)="displayRecipeForm()" slot="fixed" horizontal="start" vertical="bottom">
+    <ion-fab-button color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>
 
 <ion-content *ngIf="isRecipeFormActive">
