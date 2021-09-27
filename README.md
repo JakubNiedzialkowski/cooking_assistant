@@ -1,45 +1,27 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# Cooking assistant
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+Cooking assistant is a progressive web application(PWA) built for mobile devices in Ionic Framework. The goal of the application is to aid users in the process of perparing meals through providing information for for every step of a recipe. Recipes are stored persistently in local memory of the device and they can be created, read, updated and deleted. Each recipes stores the recipe image, steps needed to complete the recipe and the ingredients list. The application supports preparing multiple recipes simultaneously. It utilizes a two-way voice interface allowing control of the program without the need of using hands which can be troublesome in kitchen environment. Cooking assistant will guide the user through each step of the recipe with predetermined time for each step. The timer can be paused and resumed. Lastly it features a recipe suggestion system based on user’s past actions within the application.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+This project served as learning experience for Ionic Framework and developing multi-platform applications using the PWA technology. Cooking assistant was meant to ease the experience of cooking for beginner cooks and people struggling with various impairments thanks to the use of multimodal interfaces. Currently the only supported language is Polish and the two-way voice interface is only supported by mobile devices.
 
----
+# Development server
 
-## Edit a file
+To run this application use `ionic serve -o` in the command line. This will run the development server and open the application in your default browser.
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+# Running the application on a mobile device
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+To run this application on a mobile device use `ionic cordova run <platform>` where `<platform>` signifies mobile device's platform. For most users this will be `android` or `ios`. For development purposes remember to connect the device to the computer and enable USB debugging on the mobile device.
 
----
+# Application GUI showcase
 
-## Create a file
+## Home screen with recipes(left) and the side nav menu(right)
+![Home screen with recipes and the side menu](https://user-images.githubusercontent.com/26775821/134899068-d9f33e62-a977-415d-8c3a-89a630f2d342.png)
 
-Next, you’ll add a new file to this repository.
+## Recipe screen(left) and Actively cooked recipe screen(right)
+![Recipe screen and actively cooked recipe screen](https://user-images.githubusercontent.com/26775821/134899644-01b13456-5bbc-414f-9358-5110c66aa340.png)
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+## Recipe deletion prompt
+![Recipe deletion prompt](https://user-images.githubusercontent.com/26775821/134899807-b6d69106-84ad-4ab1-bb0e-e7566c1dfc9b.jpg)
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
 
----
 
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
