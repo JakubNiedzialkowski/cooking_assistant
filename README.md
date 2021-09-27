@@ -12,6 +12,16 @@ To run this application use `ionic serve -o` in the command line. This will run 
 
 To run this application on a mobile device use `ionic cordova run <platform>` where `<platform>` signifies mobile device's platform. For most users this will be `android` or `ios`. For development purposes remember to connect the device to the computer and enable USB debugging on the mobile device.
 
+# Supported list of voice commands
+
+- Przygotuj|Gotuj|Usmaż <recipe_name>: Begin cooking specified recipe.
+- Zakończ przygotowywanie|Zakończ gotowanie|Zakończ smażenie <recipe_name>: Prematurely ends cooking of specified active recipe.
+- Otwórz przepis|Pokaż przepis|Wyświetl przepis <recipe_name>: Opens specified recipe page.
+- Wstrzymaj przygotowywanie|Wstrzymaj gotowanie|Wstrzymaj smażenie <recipe_name>: Pauses timer on specified active recipe.
+- Wznów przygotowywanie|Wznów gotowanie|Wznów smażenie <recipe_name>: Resumes timer on specified paused recipe.
+- Następny krok <recipe_name>: Advances to next preparation step for specified recipe.
+- Cofnij krok|Poprzedni krok <recipe_name>: Goes back to previous step for specified recipe.
+
 # Application GUI showcase
 
 ## Home screen with recipes(left) and the side nav menu(right)
